@@ -159,3 +159,4 @@ class PirateWeatherLocationLastUpdatedSensor(
         """Return the timestamp of the last applied location."""
 
         return self._data.last_updated
+
