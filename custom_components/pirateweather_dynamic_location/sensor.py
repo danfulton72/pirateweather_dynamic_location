@@ -28,7 +28,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up the diagnostic sensors for a config entry."""
 
-    data: DynamicLocationData = hass.data[DOMAIN][entry.entry_id]
+    data: DynamicLocationData = entry.runtime_data
 
     async_add_entities(
         [
@@ -39,12 +39,7 @@ async def async_setup_entry(
 
 
 class _PirateWeatherLocationBaseSensor(SensorEntity):
-    """Shared behaviour for the diagnostic sensors.
-
-    Both sensors are pushed via the same dispatcher signal instead of
-    polling, since a new value is only ever available right after a
-    GPS check has run.
-    """
+    """Shared behaviour for the diagnostic sensors."""
 
     _attr_has_entity_name = True
     _attr_entity_category = EntityCategory.DIAGNOSTIC
@@ -85,14 +80,10 @@ class _PirateWeatherLocationBaseSensor(SensorEntity):
         self.async_write_ha_state()
 
 
-class PirateWeatherLocationDistanceSensor(_PirateWeatherLocationBaseSensor):
-    """Distance between the current GPS fix and the applied location.
-
-    This exists mainly for diagnostics: it lets you see, from
-    Developer Tools or a dashboard, how close the tracked GPS source
-    is to crossing the configured movement threshold, and what
-    location and GPS entities this entry is currently using.
-    """
+class PirateWeatherLocationDistanceSensor(
+    _PirateWeatherLocationBaseSensor
+):
+    """Distance between the current GPS fix and applied location."""
 
     _attr_translation_key = "distance_since_update"
     _attr_device_class = SensorDeviceClass.DISTANCE
@@ -100,9 +91,7 @@ class PirateWeatherLocationDistanceSensor(_PirateWeatherLocationBaseSensor):
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(
-        self,
-        entry: ConfigEntry,
-        data: DynamicLocationData,
+        self, entry: ConfigEntry, data: DynamicLocationData
     ) -> None:
         """Initialize the sensor."""
 
@@ -114,7 +103,6 @@ class PirateWeatherLocationDistanceSensor(_PirateWeatherLocationBaseSensor):
 
         if self._data.last_distance_km is None:
             return None
-
         return round(self._data.last_distance_km, 3)
 
     @property
@@ -134,21 +122,13 @@ class PirateWeatherLocationDistanceSensor(_PirateWeatherLocationBaseSensor):
 class PirateWeatherLocationLastUpdatedSensor(
     _PirateWeatherLocationBaseSensor
 ):
-    """When Pirate Weather's location was last changed by this entry.
-
-    This is set the moment a GPS-triggered update is successfully
-    applied and Pirate Weather is reloaded - not merely when a GPS
-    check runs, so it always reflects the age of the currently
-    configured Pirate Weather location.
-    """
+    """When Pirate Weather was last changed by this entry."""
 
     _attr_translation_key = "last_updated"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
 
     def __init__(
-        self,
-        entry: ConfigEntry,
-        data: DynamicLocationData,
+        self, entry: ConfigEntry, data: DynamicLocationData
     ) -> None:
         """Initialize the sensor."""
 
@@ -159,4 +139,3 @@ class PirateWeatherLocationLastUpdatedSensor(
         """Return the timestamp of the last applied location."""
 
         return self._data.last_updated
-

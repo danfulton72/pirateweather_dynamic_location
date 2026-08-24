@@ -1,0 +1,61 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pirate Weather Dynamic Location",
+        "description": "Choose the GPS source and the Pirate Weather integration to keep synchronized.",
+        "data": {
+          "latitude_entity": "GPS latitude sensor",
+          "longitude_entity": "GPS longitude sensor",
+          "pirateweather_entry_id": "Pirate Weather instance to update"
+        },
+        "data_description": {
+          "latitude_entity": "Sensor whose state is the current latitude in decimal degrees.",
+          "longitude_entity": "Sensor whose state is the current longitude in decimal degrees.",
+          "pirateweather_entry_id": "The Pirate Weather config entry whose latitude and longitude will be updated."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Pirate Weather Dynamic Location",
+        "description": "Change the GPS source or target integration.",
+        "data": {
+          "latitude_entity": "GPS latitude sensor",
+          "longitude_entity": "GPS longitude sensor",
+          "pirateweather_entry_id": "Pirate Weather instance to update"
+        },
+        "data_description": {
+          "latitude_entity": "Sensor whose state is the current latitude in decimal degrees.",
+          "longitude_entity": "Sensor whose state is the current longitude in decimal degrees.",
+          "pirateweather_entry_id": "The Pirate Weather config entry whose latitude and longitude will be updated."
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This Pirate Weather instance is already managed by another entry.",
+      "target_not_configured": "Set up Pirate Weather before adding this integration.",
+      "reconfigure_successful": "Configuration updated successfully."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Pirate Weather Dynamic Location options",
+        "description": "Tune how often movement is evaluated and how far the GPS position must move before updating the target.",
+        "data": {
+          "distance_km": "Minimum movement before updating Pirate Weather (km)",
+          "debounce_seconds": "Seconds to wait after a GPS update before checking"
+        },
+        "data_description": {
+          "distance_km": "Great-circle distance from the last successfully applied location required before an update occurs.",
+          "debounce_seconds": "Delay after a GPS state change so latitude and longitude can settle before they are read."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "distance_since_update": {"name": "Distance since last update"},
+      "last_updated": {"name": "Last updated"}
+    }
+  }
+}
